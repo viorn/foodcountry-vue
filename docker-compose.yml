@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    image: node:latest
+    container_name: foodcountry-vue
+    ports:
+      - 8081:8080
+    volumes:
+      - ./:/app
+    restart: always
+    working_dir: /app
+    entrypoint: npm run serve
