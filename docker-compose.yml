@@ -4,7 +4,7 @@ services:
     image: node:latest
     container_name: foodcountry-vue
     ports:
-      - 8081:8080
+      - 8090:8090
     volumes:
       - ./:/app
     restart: always
