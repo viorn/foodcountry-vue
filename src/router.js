@@ -9,6 +9,11 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [{
       path: '/',
+      name: 'splash',
+      component: () => import("./views/Splash.vue")
+    },
+    {
+      path: '/main',
       name: 'main',
       component: () => import("./views/Main.vue"),
       children: [{
@@ -28,6 +33,10 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: () => import("./views/Login.vue")
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })

@@ -16,23 +16,23 @@
 
 		<div id="navBarMenu" class="navbar-menu" v-bind:class="{'is-active': burgerIsActive}">
 			<div class="navbar-start">
-				<router-link class="navbar-item" to="/ingredients">
+				<router-link class="navbar-item" to="/main/ingredients">
 					Ингредиенты
 				</router-link>
-				<router-link class="navbar-item" to="/about">
+				<router-link class="navbar-item" to="/main/about">
 					Примеры
 				</router-link>
 			</div>
 			<div class="navbar-end">
         <div class="navbar-item">
-          <a class="button is-light" v-on:click="logout()">
+          <a class="button" v-on:click="logout()">
             Выход
           </a>
         </div>
 			</div>
 		</div>
 	</nav>
-    <router-view/>
+  <router-view/>
   </div>
 </template>
 
@@ -50,6 +50,9 @@
         rest.logout();
         this.$router.push("/login");
       }
+    },
+    created() {
+      if (localStorage.getItem('authToken')==null)this.$router.push("/login");
     }
   }
 </script>

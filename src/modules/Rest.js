@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function rest() {
+function rest() {
   if (localStorage.getItem('authToken') != null)
     return axios.create({
       baseURL: 'http://127.0.0.1:8080/',
@@ -48,7 +48,7 @@ export function refreshToken() {
   });
 }
 
-export function executeOrRefresh(restRequest) {
+function executeOrRefresh(restRequest) {
   return restRequest().catch(function(err) {
     if (err.response.status == 401) {
       return refreshToken().then(function(res) {
@@ -67,4 +67,17 @@ export function loadIngredients(page, limit) {
       }
     });
   });
+}
+
+export function addIngredient(ingredient) {
+  return executeOrRefresh(function() {
+    return rest().post('v1/ingredient', {
+      name: ingredient.name,
+      squirrels: ingredient.squirrels,
+      fats: ingredient.fats,
+      carbohydrates: ingredient.carbohydrates,
+      visibleType: 0,
+      ownerId: -1
+    });
+  })
 }

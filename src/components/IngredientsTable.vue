@@ -39,6 +39,9 @@
 
 <script>
 import * as rest from '@/modules/Rest.js';
+import {
+  EventBus
+} from '@/main.js';
 export default {
   name: 'IngredientsTable',
   data() {
@@ -108,15 +111,15 @@ export default {
     changePage: function(page) {
       let limit = 10;
       rest.loadIngredients(page, limit)
-      .catch(err => {
-        if (err.response.status == 401) {
-          this.$router.push("/login")
-        }
-      }).then(res => {
-        this.page = page;
-        this.ingredients = res.data.list;
-        this.updatePaginationTabs(page, Math.ceil(res.data.total / limit));
-      });
+        .catch(err => {
+          if (err.response.status == 401) {
+            this.$router.push("/login")
+          }
+        }).then(res => {
+          this.page = page;
+          this.ingredients = res.data.list;
+          this.updatePaginationTabs(page, Math.ceil(res.data.total / limit));
+        });
     },
     nextPage: function() {
       if (this.page != this.totalPage) {
@@ -131,6 +134,9 @@ export default {
   },
   created() {
     this.changePage(1);
-  }
+    EventBus.$on('update_ingredients_list', () => {
+      this.changePage(this.page);
+    });
+}
 }
 </script>

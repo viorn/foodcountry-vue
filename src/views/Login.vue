@@ -52,7 +52,7 @@ export default {
   methods: {
     clickToLogin: function() {
       rest.auth(this.email, this.password).then(res=>{
-        this.$router.push("/ingredients")
+        this.$router.push("/main")
       });
     }
   }
