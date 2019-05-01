@@ -1,90 +1,74 @@
 <template>
 <div>
-  <a class="button" @click="createIngredient.isShow=true">Добавить</a>
-  <portal to="modal">
-    <div class="modal" :class="{ 'is-active': createIngredient.isShow }">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Добавление ингредиента</p>
-          <button class="delete" aria-label="close" @click="createIngredient.isShow=false"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label">Имя</label>
-            </div>
-            <div class="field-body">
-              <input class="input" v-model="createIngredient.name" type="text">
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label ">Белки</label>
-            </div>
-            <div class="field-body">
-              <input class="input" v-model="createIngredient.squirrels" type="number">
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label ">Жиры</label>
-            </div>
-            <div class="field-body">
-              <input class="input" v-model="createIngredient.fats" type="number" placeholder="Fats input">
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-normal">
-              <label class="label ">Угдеводы</label>
-            </div>
-            <div class="field-body">
-              <input class="input" v-model="createIngredient.carbohydrates" type="number">
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" @click="pushIngredient()">Добавить</button>
-          <button class="button" @click="createIngredient.isShow=false">Отмена</button>
-        </footer>
-      </div>
-    </div>
-  </portal>
+  <a class="button" @click="clickToCreate()">Добавить</a>
   <a class="button" @click="updateList()">Обновить</a>
+  <a class="button" v-bind:disabled="selectedIngredient==null" @click="clickToEdit()">Редактировать</a>
+  <a class="button" v-bind:disabled="selectedIngredient==null" @click="clickToDelete()">Удалить</a>
+  <portal to="modal">
+    <CreateIngredientsModal ref="createIngredientModal" v-on:clickToSuccess="pushIngredient($event)"/>
+    <SimpleDialog ref="deleteModal"/>
+  </portal>
 </div>
 </template>
 
 <script>
 import * as rest from '@/modules/Rest.js';
-import {
-  EventBus
-} from '@/main.js';
+import CreateIngredientsModal from '@/components/modals/CreateIngredients.vue'
+import SimpleDialog from '@/components/modals/SimpleDialog.vue'
 export default {
   name: 'IngredientsToolsPanel',
+  components: {
+    'CreateIngredientsModal': CreateIngredientsModal,
+    'SimpleDialog': SimpleDialog,
+  },
   data() {
     return {
-      createIngredient: {
-        isShow: false,
-        name: "",
-        squirrels: 0,
-        fats: 0,
-        carbohydrates: 0
-      }
+      selectedIngredient: null
     }
   },
   methods: {
-    pushIngredient: function() {
-      rest.addIngredient(this.createIngredient).then((res) => {
-        EventBus.$emit('update_ingredients_list');
-        this.createIngredient.isShow = false;
-        this.createIngredient.name = ""
-        this.createIngredient.squirrels = 0
-        this.createIngredient.fats = 0
-        this.createIngredient.carbohydrates = 0
+    pushIngredient(ingredient) {
+      rest.addIngredient(ingredient).then((res) => {
+        this.$emit('needUpdate');
       })
     },
-    updateList: function() {
-      EventBus.$emit('update_ingredients_list');
+    saveIngredient(ingredient) {
+      rest.saveIngredient(ingredient).then((res) => {
+        this.$emit('needUpdate');
+      })
+    },
+    deleteIngredient(ingredient) {
+      rest.deleteIngredientById(ingredient.id).then((res) => {
+        this.$emit('needUpdate');
+        this.selectedIngredient = null;
+      })
+    },
+    updateList() {
+      this.$emit('needUpdate')
+    },
+    clickToCreate() {
+      this.$refs.createIngredientModal.show(null,
+        {
+            title: "Добавление ингредиента",
+            succesButton: "Добавить",
+            callback: this.pushIngredient
+        })
+    },
+    clickToEdit() {
+      this.$refs.createIngredientModal.show(this.selectedIngredient,
+        {
+            title: "Редактирование ингредиента",
+            succesButton: "Сохранить",
+            callback: this.saveIngredient
+        })
+    },
+    clickToDelete() {
+      let vm = this
+      this.$refs.deleteModal.show({
+        title: "Удалить ингредиент?",
+        message: `Вы действительно хотите удалить ингредиент ${vm.selectedIngredient.id}:${vm.selectedIngredient.name}?`,
+        callback: ()=>{vm.deleteIngredient(vm.selectedIngredient)}
+      })
     }
   }
 }

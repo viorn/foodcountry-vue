@@ -76,8 +76,26 @@ export function addIngredient(ingredient) {
       squirrels: ingredient.squirrels,
       fats: ingredient.fats,
       carbohydrates: ingredient.carbohydrates,
-      visibleType: 0,
-      ownerId: -1
+      visibleType: 0
     });
+  })
+}
+
+export function saveIngredient(ingredient) {
+  return executeOrRefresh(function() {
+    return rest().post('v1/ingredient', {
+      id: ingredient.id,
+      name: ingredient.name,
+      squirrels: ingredient.squirrels,
+      fats: ingredient.fats,
+      carbohydrates: ingredient.carbohydrates,
+      visibleType: 0
+    });
+  })
+}
+
+export function deleteIngredientById(ingredientId) {
+  return executeOrRefresh(function() {
+    return rest().delete(`v1/ingredient/${ingredientId}`);
   })
 }

@@ -23,7 +23,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="ingredient in ingredients">
+      <tr class="table-item" :class="{'is-selected': isSelectItem(ingredient)}" style="cursor: pointer;" v-for="ingredient in ingredients" @click="setSelectItem(ingredient)">
         <td class="is-hidden-mobile" style="width: 100px;">{{ingredient.id}}</td>
         <td class="is-hidden-mobile">{{ingredient.name}}</td>
         <td class="is-hidden-tablet"><a>{{ingredient.name}}</a></td>
@@ -51,10 +51,19 @@ export default {
       totalPage: 1,
       paginationFirstPage: false,
       paginationLastPage: false,
-      paginationPages: []
+      paginationPages: [],
+      selectItem: null
     }
   },
   methods: {
+    isSelectItem: function(item) {
+      if (this.selectItem==null) return false
+      return this.selectItem.id == item.id
+    },
+    setSelectItem: function(item){
+      this.selectItem = item
+      this.$emit('selectItemCallback', item)
+    },
     updatePaginationTabs: function(page, totalPage) {
       this.totalPage = totalPage;
       if (totalPage <= 10) {
@@ -110,6 +119,7 @@ export default {
     },
     changePage: function(page) {
       let limit = 10;
+      this.setSelectItem(null)
       rest.loadIngredients(page, limit)
         .catch(err => {
           if (err.response.status == 401) {
@@ -120,6 +130,9 @@ export default {
           this.ingredients = res.data.list;
           this.updatePaginationTabs(page, Math.ceil(res.data.total / limit));
         });
+    },
+    updatePage: function() {
+        this.changePage(this.page)
     },
     nextPage: function() {
       if (this.page != this.totalPage) {

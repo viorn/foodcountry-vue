@@ -1,7 +1,7 @@
 <template>
 <div>
-  <IngredientsToolsPanel id="ingredientsToolsPanel" />
-  <IngredientsTable id="ingredientsTable" />
+  <IngredientsToolsPanel id="ingredientsToolsPanel" ref="ingredientsToolsPanel" v-on:needUpdate="$refs.ingredientsTable.updatePage()"/>
+  <IngredientsTable id="ingredientsTable" ref="ingredientsTable" v-on:selectItemCallback="selectItemCallback($event)"/>
 </div>
 </template>
 
@@ -14,6 +14,11 @@ export default {
   components: {
     IngredientsTable,
     IngredientsToolsPanel
+  },
+  methods: {
+    selectItemCallback: function(ingredient) {
+      this.$refs.ingredientsToolsPanel.selectedIngredient = ingredient
+    }
   }
 }
 </script>
