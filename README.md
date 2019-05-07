@@ -1,5 +1,24 @@
 # foodcountry-vue
 
+Check rest api url in src/modules/Rest.js
+```
+function rest() {
+  if (localStorage.getItem('authToken') != null)
+    return axios.create({
+      baseURL: 'http://127.0.0.1:8080/',
+      timeout: 1000,
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+      }
+    });
+  else
+    return axios.create({
+      baseURL: 'http://127.0.0.1:8080/',
+      timeout: 1000
+    });
+}
+```
+
 ## Project setup
 ```
 npm install
