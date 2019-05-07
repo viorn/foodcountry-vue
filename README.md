@@ -1,6 +1,6 @@
 # foodcountry-vue
 
-Check rest api url in src/modules/Rest.js
+You need checking rest baseURL in src/modules/Rest.js
 ```
 function rest() {
   if (localStorage.getItem('authToken') != null)
