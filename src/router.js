@@ -26,6 +26,10 @@ export default new Router({
         {
           path: 'ingredients',
           component: () => import('./views/Ingredients.vue')
+        },
+        {
+          path: 'users',
+          component: () => import('./views/Users.vue')
         }
       ]
     },

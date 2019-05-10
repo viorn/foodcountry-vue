@@ -24,11 +24,6 @@ export default {
 </script>
 
 <style lang="scss">
-#toolsPanel {
-    margin: 16px;
-    padding: 16px;
-}
-
 #ingredientsToolsPanel {
     margin-top: 16px;
     margin-left: 16px;

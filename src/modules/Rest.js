@@ -17,8 +17,8 @@ function rest() {
 }
 
 export function auth(email, password) {
-  return rest().post('v1/public/user/auth', {
-    username: email,
+  return rest().post('public/user/auth', {
+    name: email,
     password: password
   }).then(function(response) {
     localStorage.setItem('authToken', response.data.authToken);
@@ -32,9 +32,11 @@ export function logout() {
 }
 
 export function refreshToken() {
-  var refreshToken = localStorage.getItem('authToken');
-  return rest().post('v1/public/user/auth', {
-    refreshToken: refreshToken
+  var authToken = localStorage.getItem('authToken');
+  var refreshToken = localStorage.getItem('refreshToken');
+  return rest().post('public/user/refresh', {
+    refreshToken: refreshToken,
+    authToken: authToken
   }).then(function(response) {
     localStorage.setItem('authToken', response.data.authToken);
     localStorage.setItem('refreshToken', response.data.refreshToken);
@@ -60,10 +62,9 @@ function executeOrRefresh(restRequest) {
 
 export function loadIngredients(page, limit) {
   return executeOrRefresh(function() {
-    return rest().get('v1/ingredients', {
+    return rest().get(`ingredient/list/${page - 1}`, {
       params: {
-        page: page - 1,
-        pageCount: limit
+        limit: limit
       }
     });
   });
@@ -71,31 +72,44 @@ export function loadIngredients(page, limit) {
 
 export function addIngredient(ingredient) {
   return executeOrRefresh(function() {
-    return rest().post('v1/ingredient', {
-      name: ingredient.name,
-      squirrels: ingredient.squirrels,
-      fats: ingredient.fats,
-      carbohydrates: ingredient.carbohydrates,
-      visibleType: 0
+    return rest().post('ingredient/add', {
+      ingredient: {
+        name: ingredient.name,
+        squirrels: parseInt(ingredient.squirrels, 0),
+        fats: parseInt(ingredient.fats, 0),
+        carbohydrates: parseInt(ingredient.carbohydrates, 0),
+        visible: 'PUBLIC'
+      }
     });
   })
 }
 
 export function saveIngredient(ingredient) {
   return executeOrRefresh(function() {
-    return rest().post('v1/ingredient', {
-      id: ingredient.id,
-      name: ingredient.name,
-      squirrels: ingredient.squirrels,
-      fats: ingredient.fats,
-      carbohydrates: ingredient.carbohydrates,
-      visibleType: 0
+    return rest().post(`ingredient/edit/${ingredient.id}`, {
+      ingredient: {
+        name: ingredient.name,
+        squirrels: parseInt(ingredient.squirrels, 0),
+        fats: parseInt(ingredient.fats, 0),
+        carbohydrates: parseInt(ingredient.carbohydrates, 0),
+        visible: 'PUBLIC'
+      }
     });
   })
 }
 
 export function deleteIngredientById(ingredientId) {
   return executeOrRefresh(function() {
-    return rest().delete(`v1/ingredient/${ingredientId}`);
+    return rest().delete(`ingredient/${ingredientId}`);
   })
+}
+
+export function getUsers(page, limit) {
+  return executeOrRefresh(function() {
+    return rest().get(`admin/user/list/${page - 1}`, {
+      params: {
+        limit: limit
+      }
+    });
+  });
 }

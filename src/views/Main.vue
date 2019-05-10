@@ -19,6 +19,9 @@
 				<router-link class="navbar-item" to="/main/ingredients">
 					Ингредиенты
 				</router-link>
+        <router-link class="navbar-item" to="/main/users">
+					Пользователи
+				</router-link>
 				<router-link class="navbar-item" to="/main/about">
 					Примеры
 				</router-link>
