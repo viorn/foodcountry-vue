@@ -55,7 +55,7 @@ export default {
         })
     },
     clickToEdit() {
-      this.$refs.createIngredientModal.show(this.selectedIngredient,
+      this.$refs.createIngredientModal.show(Object.assign({}, this.selectedIngredient),
         {
             title: "Редактирование ингредиента",
             succesButton: "Сохранить",

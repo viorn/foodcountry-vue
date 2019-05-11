@@ -75,9 +75,9 @@ export function addIngredient(ingredient) {
     return rest().post('ingredient/add', {
       ingredient: {
         name: ingredient.name,
-        squirrels: parseInt(ingredient.squirrels, 0),
-        fats: parseInt(ingredient.fats, 0),
-        carbohydrates: parseInt(ingredient.carbohydrates, 0),
+        squirrels: parseFloat(ingredient.squirrels, 0),
+        fats: parseFloat(ingredient.fats, 0),
+        carbohydrates: parseFloat(ingredient.carbohydrates, 0),
         visible: 'PUBLIC'
       }
     });
@@ -89,9 +89,9 @@ export function saveIngredient(ingredient) {
     return rest().post(`ingredient/edit/${ingredient.id}`, {
       ingredient: {
         name: ingredient.name,
-        squirrels: parseInt(ingredient.squirrels, 0),
-        fats: parseInt(ingredient.fats, 0),
-        carbohydrates: parseInt(ingredient.carbohydrates, 0),
+        squirrels: parseFloat(ingredient.squirrels, 0),
+        fats: parseFloat(ingredient.fats, 0),
+        carbohydrates: parseFloat(ingredient.carbohydrates, 0),
         visible: 'PUBLIC'
       }
     });
